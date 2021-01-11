@@ -4,11 +4,19 @@ require 'uri'
 
 external_links = []
 
-domain = "juliendesrosiers.com"
-full_domain = "www.#{domain}"
+# First argument: domain (ex: nouvellevie.com)
+full_domain = ARGV.shift
+
+domain =
+  if full_domain =~ /^www\./
+    _, domain = full_domain.split('.', 2)
+    domain
+  else
+    full_domain
+  end
 
 # Index External links
-Anemone.crawl("https://#{full_domain}/") do |anemone|
+Anemone.crawl("http://#{full_domain}/") do |anemone|
   anemone.on_every_page do |page|
     if page.doc
       page.doc.css('a').each do |link|
